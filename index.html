@@ -297,13 +297,13 @@
   <div class="container is-max-desktop">
     <div class="hero-body">
       <!-- TODO: Replace with your teaser video -->
-      <video poster="" id="tree" autoplay controls muted loop height="100%" preload="metadata">
+      <!-- <video poster="" id="tree" autoplay controls muted loop height="100%" preload="metadata"> -->
         <!-- TODO: Add your video file path here -->
-        <source src="static/videos/banner_video.mp4" type="video/mp4">
-      </video>
+        <!-- <source src="static/videos/banner_video.mp4" type="video/mp4"> -->
+      <!-- </video> -->
       <!-- TODO: Replace with your video description -->
       <h2 class="subtitle has-text-centered">
-        Aliquam vitae elit ullamcorper tellus egestas pellentesque. Ut lacus tellus, maximus vel lectus at, placerat pretium mi. Maecenas dignissim tincidunt vestibulum. Sed consequat hendrerit nisl ut maximus. 
+        Project summary: Fail in simulation. Reflect on the cause. Succeed in reality. 
       </h2>
     </div>
   </div>
@@ -319,7 +319,7 @@
         <div class="content has-text-justified">
           <!-- TODO: Replace with your paper abstract -->
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ullamcorper tellus sed ante aliquam tempus. Etiam porttitor urna feugiat nibh elementum, et tempor dolor mattis. Donec accumsan enim augue, a vulputate nisi sodales sit amet. Proin bibendum ex eget mauris cursus euismod nec et nibh. Maecenas ac gravida ante, nec cursus dui. Vivamus purus nibh, placerat ac purus eget, sagittis vestibulum metus. Sed vestibulum bibendum lectus gravida commodo. Pellentesque auctor leo vitae sagittis suscipit.
+            End-to-end autonomous driving has recently benefited from Vision-Language Models (VLMs) and diffusion-based trajectory planners, enabling stronger reasoning and more reliable decision making. ReCogDrive combines these components with reinforcement learning and achieves state-of-the-art performance on autonomous driving benchmarks. However, the framework still suffers from two limitations: the lack of failure-aware learning and limited exploration during policy optimization. To address these issues, we introduce a failure-aware feedback mechanism that provides semantic explanations for unsuccessful behaviors and an ambiguity-driven trajectory selection strategy that promotes more informative exploration. Experimental results show that the proposed improvements consistently enhance driving performance and robustness, demonstrating the effectiveness of combining explicit failure feedback with exploration-oriented reinforcement learning for diffusion-based autonomous driving systems.
           </p>
         </div>
       </div>
@@ -329,102 +329,199 @@
 <!-- End paper abstract -->
 
 
-<!-- Image carousel -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-       <div class="item">
-        <!-- TODO: Replace with your research result images -->
-        <img src="static/images/carousel1.jpg" alt="First research result visualization" loading="lazy"/>
-        <!-- TODO: Replace with description of this result -->
-        <h2 class="subtitle has-text-centered">
-          First image description.
-        </h2>
-      </div>
-      <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel2.jpg" alt="Second research result visualization" loading="lazy"/>
-        <h2 class="subtitle has-text-centered">
-          Second image description.
-        </h2>
-      </div>
-      <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel3.jpg" alt="Third research result visualization" loading="lazy"/>
-        <h2 class="subtitle has-text-centered">
-         Third image description.
-       </h2>
-     </div>
-     <div class="item">
-      <!-- Your image here -->
-      <img src="static/images/carousel4.jpg" alt="Fourth research result visualization" loading="lazy"/>
-      <h2 class="subtitle has-text-centered">
-        Fourth image description.
-      </h2>
+
+<!-- Baseline: ReCogDrive -->
+<section class="section">
+  <div class="container is-max-desktop">
+<h2 class="title is-3">Baseline: ReCogDrive [1]</h2>
+<div class="content has-text-justified">
+  <p>
+    ReCogDrive is a cognitive autonomous driving framework that integrates
+    Vision-Language Models, diffusion-based trajectory planning, and
+    reinforcement learning. The framework bridges high-level reasoning and
+    continuous control, enabling safer and more robust driving behaviors in
+    complex traffic scenarios.
+  </p>
+</div>
+
+<div id="results-carousel" class="carousel results-carousel">
+
+  <div class="item">
+    <img src="static/images/recogdrive_framework.png"
+         alt="ReCogDrive framework"
+         loading="lazy"/>
+    <h2 class="subtitle has-text-centered">
+      Overall architecture of ReCogDrive.
+    </h2>
+  </div>
+
+  <div class="item">
+    <img src="static/images/token_optimization.png"
+         alt="Token optimization"
+         loading="lazy"/>
+    <h2 class="subtitle has-text-centered">
+      Cognitive token optimization process.
+    </h2>
+  </div>
+
+  <div class="item">
+    <img src="static/images/diffgrpo.png"
+         alt="DiffGRPO"
+         loading="lazy"/>
+    <h2 class="subtitle has-text-centered">
+      DiffGRPO for diffusion-based reinforcement learning.
+    </h2>
+  </div>
+
+  <div class="item">
+    <img src="static/images/evaluation_results.png"
+         alt="Evaluation results"
+         loading="lazy"/>
+    <h2 class="subtitle has-text-centered">
+      Benchmark performance on autonomous driving tasks.
+    </h2>
+  </div>
+
+</div>
+  </div>
+</section>
+<!-- End Baseline: ReCogDrive -->
+
+
+<!-- Proposed Method -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+<h2 class="title is-3">Proposed Method</h2>
+
+<div class="content has-text-justified">
+  <p>
+    To address the limitations of ReCogDrive, we introduce two complementary improvements.
+    The first focuses on failure-aware learning by leveraging teacher feedback to provide
+    semantic explanations for unsuccessful behaviors. The second enhances exploration during
+    reinforcement learning through ambiguity-driven trajectory selection, enabling the policy
+    to learn from more informative driving scenarios.
+  </p>
+</div>
+
+<!-- Method 1 -->
+<div class="columns is-vcentered mt-6">
+  <div class="column is-half">
+    <h3 class="title is-4">Failure-Aware Teacher Feedback</h3>
+    <div class="content has-text-justified">
+      <p>
+        The original ReCogDrive framework relies solely on scalar rewards,
+        making it difficult for the policy to understand why a trajectory
+        fails. We introduce a teacher model that analyzes unsuccessful
+        behaviors and provides semantic feedback such as collision risk,
+        lane deviation, or unsafe maneuvers. This feedback is then used
+        to regenerate trajectories and guide policy optimization,
+        allowing the agent to learn corrective behaviors rather than
+        only receiving sparse reward signals.
+      </p>
     </div>
+  </div>
+
+  <div class="column is-half">
+    <img
+      src="static/images/method1_teacher_feedback.png"
+      alt="Failure-aware teacher feedback"
+      loading="lazy">
+  </div>
+
+</div>
+
+<!-- Method 2 -->
+<div class="columns is-vcentered mt-6">
+  <div class="column is-half">
+    <h3 class="title is-4">Ambiguity-Driven Exploration</h3>
+    <div class="content has-text-justified">
+      <p>
+        Diffusion-based planners often generate highly similar trajectories,
+        resulting in weak policy gradients and limited exploration. To
+        address this issue, we generate multiple candidate trajectories and
+        prioritize ambiguous samples that contain richer learning signals.
+        By focusing on informative scenarios where different behaviors lead
+        to different outcomes, the reinforcement learning process receives
+        stronger supervision and can discover more robust driving policies.
+      </p>
+    </div>
+  </div>
+
+  <div class="column is-half">
+    <img
+      src="static/images/method2_ambiguity_sampling.png"
+      alt="Ambiguity-driven exploration"
+      loading="lazy">
   </div>
 </div>
+  </div>
+</section>
+<!-- End Proposed Method -->
+
+
+
+<!-- Results -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+<h2 class="title is-3">Results</h2>
+
+<div class="content has-text-justified">
+  <p>
+    We evaluate the proposed improvements on top of the ReCogDrive baseline.
+    The results demonstrate that both reinforcement learning and ambiguity-driven
+    trajectory selection consistently improve driving performance, leading to
+    higher PDMS scores across different model scales.
+  </p>
 </div>
-</section>
-<!-- End image carousel -->
 
+<div class="columns is-centered">
+  <div class="column is-three-quarters">
 
+    <table class="table is-striped is-hoverable is-fullwidth">
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>PDMS ↑</th>
+        </tr>
+      </thead>
 
+      <tbody>
+        <tr>
+          <td>ReCogDrive (2B)</td>
+          <td>0.8197</td>
+        </tr>
+        <tr>
+          <td>ReCogDrive + RL (2B)</td>
+          <td>0.8623</td>
+        </tr>
+        <tr>
+          <td>ReCogDrive + RL + Ambiguous Samples (2B)</td>
+          <td><strong>0.8703</strong></td>
+        </tr>
 
-<!-- Youtube video -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <!-- Paper video. -->
-      <h2 class="title is-3">Video Presentation</h2>
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          
-          <div class="publication-video">
-            <!-- TODO: Replace with your YouTube video ID -->
-            <iframe src="https://www.youtube.com/embed/JkaxUblCGz0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
+        <tr>
+          <td>ReCogDrive (8B)</td>
+          <td>0.8144</td>
+        </tr>
+        <tr>
+          <td>ReCogDrive + RL (8B)</td>
+          <td>0.8543</td>
+        </tr>
+        <tr>
+          <td>ReCogDrive + RL + Ambiguous Samples (8B)</td>
+          <td><strong>0.8694</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>
   </div>
 </section>
-<!-- End youtube video -->
+<!-- End Results -->
 
-
-<!-- Video carousel -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3">Another Carousel</h2>
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-video1">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video1" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel1.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-video2">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video2" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel2.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-video3">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video3" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel3.mp4" type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End video carousel -->
 
 
 
@@ -432,18 +529,18 @@
 
 
 <!-- Paper poster -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title">Poster</h2>
+<!-- <section class="hero is-small is-light"> -->
+  <!-- <div class="hero-body"> -->
+    <!-- <div class="container"> -->
+      <!-- <h2 class="title">Poster</h2> -->
 
       <!-- TODO: Replace with your poster PDF -->
-      <iframe  src="static/pdfs/sample.pdf" width="100%" height="550">
-          </iframe>
+      <!-- <iframe  src="static/pdfs/sample.pdf" width="100%" height="550"> -->
+          <!-- </iframe> -->
         
-      </div>
-    </div>
-  </section>
+      <!-- </div> -->
+    <!-- </div> -->
+  <!-- </section> -->
 <!--End paper poster -->
 
 
@@ -458,12 +555,11 @@
           <span class="copy-text">Copy</span>
         </button>
       </div>
-      <pre id="bibtex-code"><code>@article{YourPaperKey2024,
-  title={Your Paper Title Here},
-  author={First Author and Second Author and Third Author},
-  journal={Conference/Journal Name},
-  year={2024},
-  url={https://your-domain.com/your-project-page}
+      <pre id="bibtex-code"><code>@article{li2025recogdrive,
+  title={Recogdrive: A reinforced cognitive framework for end-to-end autonomous driving},
+  author={Li, Yongkang and Xiong, Kaixin and Guo, Xiangyu and Li, Fang and Yan, Sixu and Xu, Gangwei and Zhou, Lijun and Chen, Long and Sun, Haiyang and Wang, Bing and others},
+  journal={arXiv preprint arXiv:2506.08052},
+  year={2025}
 }</code></pre>
     </div>
 </section>
